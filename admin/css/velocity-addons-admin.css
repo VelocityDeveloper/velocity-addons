@@ -674,13 +674,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
   color: #dc3545;
-  padding: 4px;
+  padding: .35rem .5rem;
   cursor: pointer;
 }
 
+.wa-remove-contact:hover {
+    border: 1px solid #dc3545;
+}
 .wa-remove-contact svg {
   fill: currentColor;
 }

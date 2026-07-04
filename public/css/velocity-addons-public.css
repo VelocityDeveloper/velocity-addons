@@ -75,14 +75,7 @@
 .wa-multi-list.is-left { left: 0; }
 .wa-multi-list.is-right { right: 0; }
 .wa-multi-list.is-open { display: block; }
-.float-scrolltop-left .pull-right .wa-multi-list.is-left {
-  left: 3.5rem;
-  transition: all 400ms ease-in;
-}
-.float-scrolltop-right .pull-left .wa-multi-list.is-right {
-  right: 3.5rem;
-  transition: all 400ms ease-in;
-}
+
 
 .wa-multi-link {
     text-decoration: none;

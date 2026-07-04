@@ -87,8 +87,9 @@ class Velocity_Addons
 
     public function add_floating_whatsapp()
     {
-        $whatsapp_position  = get_option('whatsapp_position', 'right');
-        echo '<div class="floating-footer float-wa-' . $whatsapp_position . ' float-scrolltop-' . $whatsapp_position . '">';
+        $whatsapp_position    = get_option('whatsapp_position', 'right');
+        $scrolltotop_position = get_option('scrolltotop_position', 'right');
+        echo '<div class="floating-footer float-wa-' . $whatsapp_position . ' float-scrolltop-' . $scrolltotop_position . '">';
         Velocity_Addons_Floating_Whatsapp::justg_footer_whatsapp();
         Velocity_Addons_Floating_Whatsapp::add_floating_scrolltop();
         echo '</div>';
@@ -254,7 +255,7 @@ class Velocity_Addons
          * Class untuk menambah post duplicator di WordPress admin panel.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-post-duplicator.php';
-        
+
         /**
          * Class untuk memasukkan kode snippet di WordPress admin panel.
          */

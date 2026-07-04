@@ -36,17 +36,26 @@
 
 	$(function(){
 		var $btn = $('.scroll-to-top.floating-button');
+		var $footer = $('.floating-footer');
+		var $waButton = $('.whatsapp-floating.floating-button, .wa-multi-toggle.floating-button');
 		if ($btn.length) {
-			var last = 0;
 			var showThreshold = 200;
+			var syncWaShift = function(isVisible) {
+				if (!$footer.length || !$waButton.length) return;
+				var waPos = $footer.data('wa-position');
+				var scrollPos = $footer.data('scrolltop-position');
+				var sameSide = waPos && scrollPos && waPos === scrollPos;
+				$waButton.toggleClass('wa-shift-scrolltop', sameSide && isVisible);
+			};
 			var onScroll = function() {
 				var y = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
-				if (y > showThreshold) {
+				var shouldShow = y > showThreshold;
+				if (shouldShow) {
 					if (!$btn.is(':visible')) { $btn.stop(true, true).fadeIn(150); }
 				} else {
 					if ($btn.is(':visible')) { $btn.stop(true, true).fadeOut(150); }
 				}
-				last = y;
+				syncWaShift(shouldShow);
 			};
 			onScroll();
 			$(window).on('scroll.vdScrollTop', onScroll);

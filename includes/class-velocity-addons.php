@@ -89,7 +89,7 @@ class Velocity_Addons
     {
         $whatsapp_position    = get_option('whatsapp_position', 'right');
         $scrolltotop_position = get_option('scrolltotop_position', 'right');
-        echo '<div class="floating-footer float-wa-' . $whatsapp_position . ' float-scrolltop-' . $scrolltotop_position . '">';
+        echo '<div class="floating-footer float-wa-' . $whatsapp_position . ' float-scrolltop-' . $scrolltotop_position . '" data-wa-position="' . esc_attr($whatsapp_position) . '" data-scrolltop-position="' . esc_attr($scrolltotop_position) . '">';
         Velocity_Addons_Floating_Whatsapp::justg_footer_whatsapp();
         Velocity_Addons_Floating_Whatsapp::add_floating_scrolltop();
         echo '</div>';

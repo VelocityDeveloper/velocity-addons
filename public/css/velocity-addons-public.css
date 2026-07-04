@@ -35,6 +35,17 @@
 .floating-button.right { float: right; }
 .floating-button.left { float: left; }
 
+.whatsapp-floating.wa-shift-scrolltop,
+.wa-multi-toggle.wa-shift-scrolltop {
+  margin-right: 3.5rem;
+}
+
+.whatsapp-floating.left.wa-shift-scrolltop,
+.wa-multi-toggle.left.wa-shift-scrolltop {
+  margin-right: 0;
+  margin-left: 3.5rem;
+}
+
 .scroll-to-top svg {
   width: 18px;
   height: 18px;

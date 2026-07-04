@@ -40,6 +40,14 @@ class Velocity_Addons_Floating_Whatsapp
         ]);
         register_setting('velocity_floating_whatsapp_group', 'whatsapp_text');
         register_setting('velocity_floating_whatsapp_group', 'whatsapp_position');
+        register_setting('velocity_floating_whatsapp_group', 'scrolltotop_position', [
+            'type'              => 'string',
+            'sanitize_callback' => function ($value) {
+                $value = sanitize_key((string) $value);
+                return in_array($value, ['left', 'right'], true) ? $value : 'right';
+            },
+            'default'           => 'right',
+        ]);
     }
 
     public static function floating_whatsapp_page()
@@ -65,6 +73,7 @@ class Velocity_Addons_Floating_Whatsapp
                     <?php endforeach; ?>
                     <input type="hidden" name="whatsapp_text" value="<?php echo esc_attr($whatsapp_text); ?>" />
                     <input type="hidden" name="whatsapp_message" value="<?php echo esc_attr($whatsapp_message); ?>" />
+                    <input type="hidden" name="scrolltotop_position" value="<?php echo esc_attr(get_option('scrolltotop_position', 'right')); ?>" />
                     <div class="vd-section">
                         <div class="vd-section-header" style="padding: 1.25rem 1.5rem; border-bottom: 1px solid #e5e7eb; background-color: #f9fafb;">
                             <h3 style="margin:0; font-size:1.1rem; color:#374151;">Position</h3>
@@ -77,7 +86,14 @@ class Velocity_Addons_Floating_Whatsapp
                                     <option value="left" <?php selected(get_option('whatsapp_position'), 'left'); ?>>Left</option>
                                 </select>
                             </div>
-                            <p>Posisi tombol dan tombol scroll-to-top akan mengikuti pilihan kanan/kiri.</p>
+                            <div style="margin-bottom: 1rem;">
+                                <label style="display:block; font-weight:600; margin-bottom:0.25rem;">ScrollToTop Position</label>
+                                <select name="scrolltotop_position">
+                                    <option value="right" <?php selected(get_option('scrolltotop_position', 'right'), 'right'); ?>>Right</option>
+                                    <option value="left" <?php selected(get_option('scrolltotop_position', 'right'), 'left'); ?>>Left</option>
+                                </select>
+                            </div>
+                            <p>Posisi scroll-to-top bisa beda dari tombol WhatsApp.</p>
                         </div>
                     </div>
                 <?php else : ?>
@@ -244,10 +260,10 @@ class Velocity_Addons_Floating_Whatsapp
     public static function add_floating_scrolltop()
     {
         $enable_scrolltop       = get_option('floating_scrollTop', '1');
-        $whatsapp_position      = get_option('whatsapp_position', 'right');
+        $scrolltotop_position    = get_option('scrolltotop_position', 'right');
         if ($enable_scrolltop == '1'):
         ?>
-            <div class="scroll-to-top floating-button <?php echo $whatsapp_position; ?>" style="display: none;">
+            <div class="scroll-to-top floating-button <?php echo $scrolltotop_position === 'left' ? 'left' : 'right'; ?>" style="display: none;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
                 </svg>

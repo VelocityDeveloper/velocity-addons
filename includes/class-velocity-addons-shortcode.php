@@ -257,7 +257,7 @@ class Velocity_Addons_Shortcode {
         ///show if have ID & meta vdgaleri
         if($id && $vdgaleri):
         ?>
-        <div class="vdgallery-slideshow vdgallery-slideshow-<?php echo $idnode;?>" data-node="<?php echo $idnode;?>" data-id="<?php echo $id;?>">
+        <div class="vdgallery-slideshow overflow-hidden vdgallery-slideshow-<?php echo $idnode;?>" data-node="<?php echo $idnode;?>" data-id="<?php echo $id;?>">
             
             <?php if(!empty($media)): ?>
 

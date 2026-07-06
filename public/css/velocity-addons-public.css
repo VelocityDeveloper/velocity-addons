@@ -22,7 +22,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 9999px;
+  padding: 0.375rem 0.75rem;
+  border-radius: 50rem;
   background: #111827;
   color: #ffffff;
   box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 6px 6px rgba(0,0,0,0.1);
@@ -31,6 +32,14 @@
   position: relative;
   float: none;
   margin: 0;
+  text-align: center;
+  text-decoration: none;
+  vertical-align: middle;
+  transition: all .5s ease !important;
+  line-height: 1.5;
+  position: fixed;
+  bottom: .5rem;
+  right: .5rem;
 }
 .floating-button.right { float: right; }
 .floating-button.left { float: left; }
@@ -58,6 +67,21 @@
 
 .floating-footer .scroll-to-top {
   margin-top: 8px;
+}
+.floating-footer .floating-button .pt-1 {
+    padding-top: .25rem !important;
+}
+.floating-footer .floating-button.whatsapp-floating {
+  background: #198754;
+  background-color: #198754;
+  border-color: #198754;
+  font-size: 0.875rem;
+  gap: .45rem;
+}
+.floating-footer .floating-button.whatsapp-floating:hover {
+  background: #25d366;
+  background-color: #25d366;
+  border-color: #25d366;
 }
  
 @media only screen and (max-width: 600px) {

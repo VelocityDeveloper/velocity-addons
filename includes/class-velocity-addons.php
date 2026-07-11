@@ -232,11 +232,6 @@ class Velocity_Addons
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-optimasi.php';
 
         /**
-         * Class untuk menambah option duitku
-         */
-        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-duitku.php';
-
-        /**
          * Class untuk menambah lisensi cecker
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-license.php';

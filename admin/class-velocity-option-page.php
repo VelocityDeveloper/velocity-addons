@@ -143,18 +143,6 @@ class Custom_Admin_Option_Page
             );
         }
 
-        $velocity_duitku = get_option('velocity_duitku', '0');
-        if ($velocity_duitku == '1') {
-            add_submenu_page(
-                'admin_velocity_addons',
-                'Duitku',
-                'Duitku',
-                'manage_options',
-                'velocity_duitku_settings',
-                array($this, 'velocity_duitku_page'),
-            );
-        }
-
         $statistik_velocity = get_option('statistik_velocity', '1');
         if ($statistik_velocity == '1') {
             add_submenu_page(
@@ -240,11 +228,6 @@ class Custom_Admin_Option_Page
         Velocity_Addons_News::render_news_settings_page();
     }
 
-    public function velocity_duitku_page()
-    {
-        Velocity_Addons_Duitku::render_settings_page();
-    }
-
     private function get_admin_velocity_addons_sub_pages()
     {
         return array(
@@ -261,7 +244,6 @@ class Custom_Admin_Option_Page
             'footer' => array($this, 'velocity_snippet_settings'),
             'whatsapp' => array($this, 'velocity_floating_whatsapp_page'),
             'whatsapp-style' => array($this, 'velocity_floating_whatsapp_page'),
-            'duitku' => array($this, 'velocity_duitku_page'),
             'statistics' => array($this, 'visitor_stats_page_callback'),
             'shortcode' => array($this, 'visitor_stats_page_callback'),
             'optimasi' => array($this, 'optimize_db_page_callback'),
@@ -295,7 +277,6 @@ class Custom_Admin_Option_Page
             'footer' => 'velocity_snippet_footer_settings',
             'whatsapp' => 'velocity_floating_whatsapp',
             'whatsapp-style' => 'velocity_floating_whatsapp_style',
-            'duitku' => 'velocity_duitku_settings',
             'statistics' => 'velocity_statistics',
             'shortcode' => 'velocity_statistics_shortcode',
             'optimasi' => 'velocity_optimize_db',
@@ -332,7 +313,6 @@ class Custom_Admin_Option_Page
         register_setting('velocity_general_options_group', 'news_generate');
         register_setting('velocity_general_options_group', 'velocity_gallery');
         register_setting('velocity_general_options_group', 'velocity_optimasi');
-        register_setting('velocity_general_options_group', 'velocity_duitku');
 
         // Security
         register_setting('velocity_security_options_group', 'limit_login_attempts');
@@ -667,7 +647,6 @@ class Custom_Admin_Option_Page
             ['id' => 'floating_whatsapp', 'type' => 'checkbox', 'title' => 'Floating Whatsapp', 'std' => 1, 'label' => 'Aktifkan Whatsapp Floating.'],
             ['id' => 'news_generate', 'type' => 'checkbox', 'title' => 'Import Artikel dari API', 'std' => 1, 'label' => 'Aktifkan fungsi untuk import artikel postingan.'],
             ['id' => 'velocity_gallery', 'type' => 'checkbox', 'title' => 'Gallery Post Type', 'std' => 0, 'label' => 'Aktifkan fungsi untuk menggunakan Gallery Post Type.'],
-            ['id' => 'velocity_duitku', 'type' => 'checkbox', 'title' => 'Payment Gateway Duitku', 'std' => 0, 'label' => 'Aktifkan payment gateway Duitku.'],
         ];
         $this->render_general_settings_section('velocity_feature_settings', 'Pengaturan Fitur', 'Aktif/nonaktif fitur addon Velocity.', $fields);
     }
@@ -743,7 +722,6 @@ class Custom_Admin_Option_Page
             'news_generate' => 1,
             'velocity_gallery' => 0,
             'velocity_optimasi' => 0,
-            'velocity_duitku' => 0,
         ];
         foreach ($defaults as $k => $v) {
             update_option($k, $v);

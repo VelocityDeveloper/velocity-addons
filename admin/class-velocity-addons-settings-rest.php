@@ -1107,7 +1107,6 @@ class Velocity_Addons_Admin_Settings_REST
             'news_generate'                => 1,
             'velocity_gallery'             => 0,
             'velocity_optimasi'            => 0,
-            'velocity_duitku'              => 0,
         );
     }
 
@@ -1129,7 +1128,6 @@ class Velocity_Addons_Admin_Settings_REST
                     'news_generate'                 => array('type' => 'bool', 'default' => 1),
                     'velocity_gallery'              => array('type' => 'bool', 'default' => 0),
                     'velocity_optimasi'             => array('type' => 'bool', 'default' => 0),
-                    'velocity_duitku'               => array('type' => 'bool', 'default' => 0),
                 ),
             ),
             'captcha' => array(
@@ -1218,20 +1216,6 @@ class Velocity_Addons_Admin_Settings_REST
                     'header_snippet' => array('type' => 'snippet', 'default' => ''),
                     'body_snippet'   => array('type' => 'snippet', 'default' => ''),
                     'footer_snippet' => array('type' => 'snippet', 'default' => ''),
-                ),
-            ),
-            'duitku' => array(
-                'options' => array(
-                    'velocity_duitku_options' => array(
-                        'type'       => 'object',
-                        'properties' => array(
-                            'mode'          => array('type' => 'select', 'allowed' => array('sandbox', 'production'), 'default' => 'sandbox'),
-                            'kode_merchant' => array('type' => 'text', 'default' => ''),
-                            'merchant_key'  => array('type' => 'text', 'default' => ''),
-                            'callback_url'  => array('type' => 'url', 'default' => get_site_url() . '/wp-json/velocityaddons/v1/duitku_callback'),
-                            'return_url'    => array('type' => 'url', 'default' => ''),
-                        ),
-                    ),
                 ),
             ),
         );

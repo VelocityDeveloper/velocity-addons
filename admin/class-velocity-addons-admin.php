@@ -94,7 +94,6 @@ class Velocity_Addons_Admin
 			'script' => 'velocity_snippet_settings',
 			'body' => 'velocity_snippet_body_settings',
 			'footer' => 'velocity_snippet_footer_settings',
-			'duitku' => 'velocity_duitku_settings',
 			'import-artikel' => 'velocity_news_settings',
 			'statistics' => 'velocity_statistics',
 			'shortcode' => 'velocity_statistics_shortcode',
@@ -233,7 +232,6 @@ class Velocity_Addons_Admin
 			'velocity_snippet_settings',
 			'velocity_snippet_body_settings',
 			'velocity_snippet_footer_settings',
-			'velocity_duitku_settings',
 			'velocity_news_settings',
 		), true);
 	}
@@ -333,11 +331,6 @@ class Velocity_Addons_Admin_Navigation
 						'label' => 'Style',
 					),
 				),
-			),
-			array(
-				'page'    => 'velocity_duitku_settings',
-				'label'   => 'Duitku',
-				'enabled' => get_option('velocity_duitku', '0') === '1',
 			),
 			array(
 				'page'     => 'velocity_statistics',
@@ -447,7 +440,6 @@ class Velocity_Addons_Admin_Navigation
 			'velocity_snippet_footer_settings' => 'footer',
 			'velocity_floating_whatsapp' => 'whatsapp',
 			'velocity_floating_whatsapp_style' => 'whatsapp-style',
-			'velocity_duitku_settings' => 'duitku',
 			'velocity_statistics' => 'statistics',
 			'velocity_statistics_shortcode' => 'shortcode',
 			'velocity_optimize_db' => 'optimasi',

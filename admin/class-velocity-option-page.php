@@ -1570,12 +1570,57 @@ class Custom_Admin_Option_Page
                     </div>
                     <div class="vd-section-body">
                         <p>Tampilkan statistik visitor di halaman, post, atau widget.</p>
-                        <ul class="vd-list">
-                            <li><span class="vd-code">style</span>: pilih tampilan statistik. <span class="vd-code">list</span> atau <span class="vd-code">inline</span></li>
-                            <li><span class="vd-code">show</span>: filter data yang ditampilkan. <span class="vd-code">all</span>, <span class="vd-code">today</span>, atau <span class="vd-code">total</span></li>
-                            <li><span class="vd-code">with_online</span>: tampilkan jumlah pengunjung online saat ini</li>
-                            <li><span class="vd-code">label_*</span>: ganti label baris counter</li>
-                        </ul>
+                        <table class="widefat striped" style="margin:15px 0 20px;">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%;">Atribut</th>
+                                    <th style="width:18%;">Nilai bawaan</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="vd-code">style</span></td>
+                                    <td><span class="vd-code">list</span></td>
+                                    <td>Model tampilan. Gunakan <span class="vd-code">list</span> untuk menampilkan setiap statistik pada baris terpisah atau <span class="vd-code">inline</span> untuk menampilkannya dalam satu baris yang dipisahkan tanda <span class="vd-code">|</span>.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">show</span></td>
+                                    <td><span class="vd-code">all</span></td>
+                                    <td>Kelompok statistik yang ditampilkan: <span class="vd-code">all</span> menampilkan statistik hari ini dan keseluruhan, <span class="vd-code">today</span> hanya statistik hari ini, sedangkan <span class="vd-code">total</span> hanya statistik keseluruhan.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">with_online</span></td>
+                                    <td><span class="vd-code">1</span></td>
+                                    <td>Menampilkan jumlah pengunjung yang sedang online. Nilai aktif yang didukung: <span class="vd-code">1</span>, <span class="vd-code">true</span>, <span class="vd-code">yes</span>, atau <span class="vd-code">on</span>. Gunakan <span class="vd-code">0</span> untuk menyembunyikannya.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">label_today_visits</span></td>
+                                    <td><span class="vd-code">Kunjungan Hari Ini</span></td>
+                                    <td>Mengganti label jumlah seluruh kunjungan pada hari ini.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">label_today_visitors</span></td>
+                                    <td><span class="vd-code">Pengunjung Hari Ini</span></td>
+                                    <td>Mengganti label jumlah pengunjung unik pada hari ini.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">label_total_visits</span></td>
+                                    <td><span class="vd-code">Total Kunjungan</span></td>
+                                    <td>Mengganti label jumlah seluruh kunjungan sejak statistik dicatat.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">label_total_visitors</span></td>
+                                    <td><span class="vd-code">Total Pengunjung</span></td>
+                                    <td>Mengganti label jumlah seluruh pengunjung unik sejak statistik dicatat.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">label_online</span></td>
+                                    <td><span class="vd-code">Pengunjung Online</span></td>
+                                    <td>Mengganti label jumlah pengunjung yang sedang online; digunakan saat <span class="vd-code">with_online</span> aktif.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <div class="vd-grid-2">
                             <div>
                                 <h6>Basic</h6>
@@ -1612,12 +1657,42 @@ class Custom_Admin_Option_Page
                     </div>
                     <div class="vd-section-body">
                         <p>Tampilkan nilai meta hit pada posting.</p>
-                        <ul class="vd-list">
-                            <li><span class="vd-code">post_id</span>: ID posting (opsional)</li>
-                            <li><span class="vd-code">format</span>: <span class="vd-code">number</span> atau <span class="vd-code">compact</span></li>
-                            <li><span class="vd-code">before</span>/<span class="vd-code">after</span>: teks sebelum/sesudah angka</li>
-                            <li><span class="vd-code">class</span>: CSS class untuk elemen angka</li>
-                        </ul>
+                        <table class="widefat striped" style="margin:15px 0 20px;">
+                            <thead>
+                                <tr>
+                                    <th style="width:20%;">Atribut</th>
+                                    <th style="width:18%;">Nilai bawaan</th>
+                                    <th>Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="vd-code">post_id</span></td>
+                                    <td><span class="vd-code">0</span> (post aktif)</td>
+                                    <td>ID post atau page yang nilai hit-nya ingin ditampilkan. Jika dikosongkan atau bernilai <span class="vd-code">0</span>, shortcode memakai ID post/page yang sedang dibuka.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">format</span></td>
+                                    <td><span class="vd-code">compact</span></td>
+                                    <td>Format angka hit. <span class="vd-code">compact</span> menyingkat angka besar, misalnya <span class="vd-code">1.2K</span>, <span class="vd-code">3.4M</span>, atau <span class="vd-code">1B</span>; gunakan <span class="vd-code">number</span> untuk format angka lengkap sesuai lokal situs.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">before</span></td>
+                                    <td>Kosong</td>
+                                    <td>Teks atau HTML yang ditampilkan sebelum elemen angka hit, misalnya <span class="vd-code">Dilihat: </span>.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">after</span></td>
+                                    <td>Kosong</td>
+                                    <td>Teks atau HTML yang ditampilkan setelah elemen angka hit, misalnya <span class="vd-code"> kali</span> atau <span class="vd-code"> views</span>.</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="vd-code">class</span></td>
+                                    <td><span class="vd-code">velocity-hits-count</span></td>
+                                    <td>Nama class CSS pada elemen <span class="vd-code">&lt;span&gt;</span> pembungkus angka, sehingga tampilannya dapat diatur melalui CSS.</td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <div class="vd-grid-2">
                             <div>
                                 <h6>Basic</h6>

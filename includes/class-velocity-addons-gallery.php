@@ -126,10 +126,13 @@ if ( ! class_exists( 'Velocity_Addons_Gallery' ) && ! is_plugin_active( 'vd-gall
          * Load plugin sources.
          */
         public function vdgallery_scripts_enqueue() {
+            $gallery_css_path = plugin_dir_path(dirname(__FILE__)) . 'public/css/vd-gallery.css';
+            $gallery_css_ver  = file_exists( $gallery_css_path ) ? filemtime( $gallery_css_path ) : VELOCITY_ADDONS_VERSION;
+
             //CSS
             wp_enqueue_style( 'flickity-styles', 'https://unpkg.com/flickity@2/dist/flickity.min.css', [], VELOCITY_ADDONS_VERSION, false );
             wp_enqueue_style( 'magnific-popup-styles', 'https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.0.0/magnific-popup.min.css', [], VELOCITY_ADDONS_VERSION, false );
-            wp_enqueue_style( 'vdgallery-styles', plugin_dir_url(dirname(__FILE__)) . 'public/css/vd-gallery.css', [], VELOCITY_ADDONS_VERSION, false );
+            wp_enqueue_style( 'vdgallery-styles', plugin_dir_url(dirname(__FILE__)) . 'public/css/vd-gallery.css', [], $gallery_css_ver, false );
 
             //JS
             wp_enqueue_script( 'flickity-script', 'https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js', [], VELOCITY_ADDONS_VERSION, true );

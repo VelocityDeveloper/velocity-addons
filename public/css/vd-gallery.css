@@ -109,6 +109,23 @@
     opacity: 1;
 }
 
+/* Caption di bawah gambar harus mempunyai line box dan ruangnya sendiri.
+ * Tanpa display block/padding, teks inline terpotong oleh overflow kartu. */
+.vdgallery-galleryshow .vdgallery-item-caption-below,
+.vdgallery-slideshow .vdgallery-item-caption-below {
+    position: static;
+    display: block;
+    width: 100%;
+    min-height: 1.45em;
+    padding: 10px 12px 12px;
+    margin: 0;
+    color: inherit;
+    font-size: .9rem;
+    line-height: 1.45;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
 .vdgallery-pagination {
     display: flex;
     flex-wrap: wrap;
@@ -217,6 +234,12 @@
         bottom: 10px;
         padding: 9px 10px;
         font-size: .78rem;
+    }
+
+    .vdgallery-galleryshow .vdgallery-item-caption-below,
+    .vdgallery-slideshow .vdgallery-item-caption-below {
+        padding: 9px 10px 11px;
+        font-size: .84rem;
     }
 
     .vdgallery-slideshow .vdgallery-item {

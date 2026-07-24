@@ -131,18 +131,6 @@ class Custom_Admin_Option_Page
             array($this, 'velocity_snippet_settings'),
         );
 
-        $floating_whatsapp = get_option('floating_whatsapp', '1');
-        if ($floating_whatsapp == '1') {
-            add_submenu_page(
-                'admin_velocity_addons',
-                'WhatsApp General',
-                'WhatsApp',
-                'manage_options',
-                'velocity_floating_whatsapp',
-                [$this, 'velocity_floating_whatsapp_page'],
-            );
-        }
-
         $statistik_velocity = get_option('statistik_velocity', '1');
         if ($statistik_velocity == '1') {
             add_submenu_page(

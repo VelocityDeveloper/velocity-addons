@@ -456,15 +456,23 @@ class Velocity_Addons_Admin_Settings_REST
         $run_permalink = !empty($tasks['permalink']);
         $run_timezone = !empty($tasks['timezone']);
         $run_datetime = !empty($tasks['datetime']);
+        $run_media = !empty($tasks['media']);
+        $run_admin_profile = !empty($tasks['admin_profile']);
         $run_standard_pages = !empty($tasks['standard_pages']);
+        $run_primary_menu = !empty($tasks['primary_menu']);
+        $run_privacy_policy = !empty($tasks['privacy_policy']);
         $run_home_seo = !empty($tasks['home_seo']);
         $run_share_image = !empty($tasks['share_image']);
 
-        if (!$run_permalink && !$run_timezone && !$run_datetime && !$run_standard_pages && !$run_home_seo && !$run_share_image) {
+        if (!$run_permalink && !$run_timezone && !$run_datetime && !$run_media && !$run_admin_profile && !$run_standard_pages && !$run_primary_menu && !$run_privacy_policy && !$run_home_seo && !$run_share_image) {
             $run_permalink = true;
             $run_timezone = true;
             $run_datetime = true;
+            $run_media = true;
+            $run_admin_profile = true;
             $run_standard_pages = true;
+            $run_primary_menu = true;
+            $run_privacy_policy = true;
             $run_home_seo = true;
             $run_share_image = true;
         }
@@ -472,7 +480,11 @@ class Velocity_Addons_Admin_Settings_REST
         $logs[] = 'Task permalink: ' . ($run_permalink ? 'ya' : 'tidak');
         $logs[] = 'Task timezone: ' . ($run_timezone ? 'ya' : 'tidak');
         $logs[] = 'Task datetime: ' . ($run_datetime ? 'ya' : 'tidak');
+        $logs[] = 'Task media settings: ' . ($run_media ? 'ya' : 'tidak');
+        $logs[] = 'Task admin profile: ' . ($run_admin_profile ? 'ya' : 'tidak');
         $logs[] = 'Task standard pages: ' . ($run_standard_pages ? 'ya' : 'tidak');
+        $logs[] = 'Task primary menu: ' . ($run_primary_menu ? 'ya' : 'tidak');
+        $logs[] = 'Task privacy policy: ' . ($run_privacy_policy ? 'ya' : 'tidak');
         $logs[] = 'Task home seo: ' . ($run_home_seo ? 'ya' : 'tidak');
         $logs[] = 'Task share image: ' . ($run_share_image ? 'ya' : 'tidak');
 
@@ -480,10 +492,10 @@ class Velocity_Addons_Admin_Settings_REST
         $license_key = is_array($license) && isset($license['key']) ? sanitize_text_field((string) $license['key']) : '';
         $logs[] = $license_key !== '' ? 'License key ditemukan' : 'License key kosong';
 
-        if ($license_key === '') {
+        if ($run_home_seo && $license_key === '') {
             return new WP_Error(
                 'velocity_license_required',
-                __('Please enter a license key.', 'velocity-addons'),
+                __('License Key diperlukan untuk Generate Home SEO.', 'velocity-addons'),
                 array('status' => 400, 'logs' => $logs)
             );
         }
@@ -522,6 +534,11 @@ class Velocity_Addons_Admin_Settings_REST
         $start_of_week = '';
         $standard_pages = '';
         $page_on_front = 0;
+        $media_settings = '';
+        $admin_profile = '';
+        $primary_menu = '';
+        $privacy_policy = '';
+        $privacy_policy_id = 0;
         if ($run_permalink) {
             update_option('permalink_structure', '/%category%/%postname%/');
             $logs[] = 'Option permalink_structure diupdate';
@@ -558,8 +575,54 @@ class Velocity_Addons_Admin_Settings_REST
             $logs[] = 'Skip datetime';
         }
 
+        if ($run_media) {
+            update_option('thumbnail_size_w', 150);
+            update_option('thumbnail_size_h', 150);
+            update_option('thumbnail_crop', 0);
+            update_option('medium_size_w', 300);
+            update_option('medium_size_h', 300);
+            update_option('large_size_w', 800);
+            update_option('large_size_h', 800);
+            $media_settings = 'Thumbnail 150×150 tanpa crop; Medium 300×300; Large 800×800';
+            $logs[] = 'Media Settings diset: ' . $media_settings;
+        } else {
+            $logs[] = 'Skip media settings';
+        }
+
+        if ($run_admin_profile) {
+            $current_user = wp_get_current_user();
+            if ($current_user instanceof WP_User && $current_user->exists()) {
+                $first_name = trim((string) get_user_meta($current_user->ID, 'first_name', true));
+                if ($first_name === '') {
+                    $updated_user = wp_update_user(
+                        array(
+                            'ID'           => $current_user->ID,
+                            'first_name'   => 'Admin',
+                            'display_name' => 'Admin',
+                        )
+                    );
+
+                    if (is_wp_error($updated_user)) {
+                        $admin_profile = 'gagal diperbarui: ' . $updated_user->get_error_message();
+                        $logs[] = 'Admin profile ' . $admin_profile;
+                    } else {
+                        $admin_profile = 'First Name dan Display Name diset ke Admin';
+                        $logs[] = 'Admin profile: ' . $admin_profile;
+                    }
+                } else {
+                    $admin_profile = 'skip, First Name sudah terisi';
+                    $logs[] = 'Admin profile: ' . $admin_profile;
+                }
+            } else {
+                $admin_profile = 'skip, user saat ini tidak ditemukan';
+                $logs[] = 'Admin profile: ' . $admin_profile;
+            }
+        } else {
+            $logs[] = 'Skip admin profile';
+        }
+
         if ($run_standard_pages) {
-            $page_titles = array('Home', 'Profile', 'Gallery', 'Contact');
+            $page_titles = array('Beranda', 'Tentang Kami', 'Layanan', 'Galeri', 'Kontak Kami');
             $prepared_pages = array();
             $home_page_id = 0;
 
@@ -579,7 +642,7 @@ class Velocity_Addons_Admin_Settings_REST
                     $page_id
                 );
 
-                if ($page_title === 'Home') {
+                if ($page_title === 'Beranda') {
                     $home_page_id = $page_id;
                 }
             }
@@ -592,12 +655,151 @@ class Velocity_Addons_Admin_Settings_REST
                 update_option('show_on_front', 'page');
                 update_option('page_on_front', $home_page_id);
                 $page_on_front = $home_page_id;
-                $logs[] = 'Reading homepage diset ke Home (#' . $home_page_id . ')';
+                $logs[] = 'Reading homepage diset ke Beranda (#' . $home_page_id . ')';
             } else {
-                $logs[] = 'Reading homepage skip, page Home tidak ditemukan';
+                $logs[] = 'Reading homepage skip, page Beranda tidak ditemukan';
             }
         } else {
             $logs[] = 'Skip standard pages';
+        }
+
+        if ($run_primary_menu) {
+            $menu_name = 'Menu Utama';
+            $menu_object = wp_get_nav_menu_object($menu_name);
+            if ($menu_object) {
+                $menu_id = (int) $menu_object->term_id;
+                $logs[] = 'Menu Utama sudah ada (#' . $menu_id . ')';
+            } else {
+                $menu_result = wp_create_nav_menu($menu_name);
+                if (is_wp_error($menu_result)) {
+                    $menu_id = 0;
+                    $logs[] = 'Gagal membuat Menu Utama: ' . $menu_result->get_error_message();
+                } else {
+                    $menu_id = (int) $menu_result;
+                    $logs[] = 'Menu Utama dibuat (#' . $menu_id . ')';
+                }
+            }
+
+            if ($menu_id > 0) {
+                $existing_items = wp_get_nav_menu_items($menu_id);
+                $existing_page_ids = array();
+                if (is_array($existing_items)) {
+                    foreach ($existing_items as $existing_item) {
+                        if ($existing_item instanceof WP_Post && $existing_item->type === 'post_type' && $existing_item->object === 'page') {
+                            $existing_page_ids[] = (int) $existing_item->object_id;
+                        }
+                    }
+                }
+
+                $menu_page_titles = array('Beranda', 'Tentang Kami', 'Layanan', 'Galeri', 'Kontak Kami');
+                $menu_position = 1;
+                foreach ($menu_page_titles as $menu_page_title) {
+                    $menu_page = get_page_by_path(sanitize_title($menu_page_title), OBJECT, 'page');
+                    if (!($menu_page instanceof WP_Post)) {
+                        $menu_page = get_page_by_title($menu_page_title, OBJECT, 'page');
+                    }
+                    if (!($menu_page instanceof WP_Post)) {
+                        $logs[] = 'Item menu skip, page tidak ditemukan: ' . $menu_page_title;
+                        $menu_position++;
+                        continue;
+                    }
+
+                    if (in_array((int) $menu_page->ID, $existing_page_ids, true)) {
+                        $logs[] = 'Item menu sudah ada, skip: ' . $menu_page_title;
+                        $menu_position++;
+                        continue;
+                    }
+
+                    $menu_item_result = wp_update_nav_menu_item(
+                        $menu_id,
+                        0,
+                        array(
+                            'menu-item-object-id' => (int) $menu_page->ID,
+                            'menu-item-object'    => 'page',
+                            'menu-item-type'      => 'post_type',
+                            'menu-item-status'    => 'publish',
+                            'menu-item-position'  => $menu_position,
+                        )
+                    );
+                    if (is_wp_error($menu_item_result)) {
+                        $logs[] = 'Gagal menambahkan item menu ' . $menu_page_title . ': ' . $menu_item_result->get_error_message();
+                    } else {
+                        $logs[] = 'Item menu ditambahkan: ' . $menu_page_title;
+                    }
+                    $menu_position++;
+                }
+
+                $menu_locations = get_theme_mod('nav_menu_locations', array());
+                if (!is_array($menu_locations)) {
+                    $menu_locations = array();
+                }
+                $menu_locations['primary'] = $menu_id;
+                set_theme_mod('nav_menu_locations', $menu_locations);
+                $primary_menu = 'Menu Utama (#' . $menu_id . ') dipasang ke primary';
+                $logs[] = $primary_menu;
+            } else {
+                $primary_menu = 'gagal dibuat';
+            }
+        } else {
+            $logs[] = 'Skip primary menu';
+        }
+
+        if ($run_privacy_policy) {
+            $configured_privacy_id = (int) get_option('wp_page_for_privacy_policy');
+            $privacy_page = $configured_privacy_id > 0 ? get_post($configured_privacy_id) : null;
+
+            if (!($privacy_page instanceof WP_Post) || $privacy_page->post_type !== 'page') {
+                $privacy_page = get_page_by_title('Kebijakan Privasi', OBJECT, 'page');
+                if (!($privacy_page instanceof WP_Post)) {
+                    $privacy_page = get_page_by_title('Privacy Policy', OBJECT, 'page');
+                }
+            }
+
+            if ($privacy_page instanceof WP_Post) {
+                $privacy_policy_id = (int) $privacy_page->ID;
+                if ($privacy_page->post_status !== 'publish') {
+                    $publish_result = wp_update_post(
+                        array(
+                            'ID'          => $privacy_policy_id,
+                            'post_status' => 'publish',
+                        ),
+                        true
+                    );
+                    if (is_wp_error($publish_result)) {
+                        $logs[] = 'Gagal publish Privacy Policy Page: ' . $publish_result->get_error_message();
+                        $privacy_policy_id = 0;
+                    } else {
+                        $logs[] = 'Privacy Policy Page dipublish (#' . $privacy_policy_id . ')';
+                    }
+                } else {
+                    $logs[] = 'Privacy Policy Page sudah publish (#' . $privacy_policy_id . ')';
+                }
+            } else {
+                $create_privacy_result = wp_insert_post(
+                    array(
+                        'post_title'  => 'Kebijakan Privasi',
+                        'post_type'   => 'page',
+                        'post_status' => 'publish',
+                    ),
+                    true
+                );
+                if (is_wp_error($create_privacy_result)) {
+                    $logs[] = 'Gagal membuat Kebijakan Privasi: ' . $create_privacy_result->get_error_message();
+                } else {
+                    $privacy_policy_id = (int) $create_privacy_result;
+                    $logs[] = 'Halaman Kebijakan Privasi dibuat dan dipublish (#' . $privacy_policy_id . ')';
+                }
+            }
+
+            if ($privacy_policy_id > 0) {
+                update_option('wp_page_for_privacy_policy', $privacy_policy_id);
+                $privacy_policy = get_the_title($privacy_policy_id) . ' (#' . $privacy_policy_id . ')';
+                $logs[] = 'Privacy Policy Page ditetapkan: ' . $privacy_policy;
+            } else {
+                $privacy_policy = 'gagal disiapkan';
+            }
+        } else {
+            $logs[] = 'Skip privacy policy';
         }
 
         if ($run_home_seo) {
@@ -615,20 +817,27 @@ class Velocity_Addons_Admin_Settings_REST
         }
 
         if ($run_share_image) {
-            $site_icon_id = (int) get_option('site_icon');
-            if ($site_icon_id > 0) {
-                $share_image = wp_get_attachment_image_url($site_icon_id, 'full');
+            $custom_logo_id = (int) get_theme_mod('custom_logo');
+            $share_image_source = '';
+            if ($custom_logo_id > 0) {
+                $share_image = wp_get_attachment_image_url($custom_logo_id, 'full');
+                if (!empty($share_image)) {
+                    $share_image_source = 'Site Logo';
+                }
             }
 
             if (empty($share_image)) {
                 $share_image = get_site_icon_url();
+                if (!empty($share_image)) {
+                    $share_image_source = 'favicon';
+                }
             }
 
             if (!empty($share_image)) {
                 update_option('share_image', esc_url_raw($share_image));
-                $logs[] = 'Share image SEO tersimpan dari favicon';
+                $logs[] = 'Share image SEO tersimpan dari ' . $share_image_source;
             } else {
-                $logs[] = 'Share image skip, favicon tidak ada';
+                $logs[] = 'Share image skip, Site Logo dan favicon tidak ada';
             }
         } else {
             $logs[] = 'Skip share image';
@@ -650,6 +859,12 @@ class Velocity_Addons_Admin_Settings_REST
                     'date_format'      => $date_format,
                     'time_format'      => $time_format,
                     'start_of_week'    => $start_of_week,
+                    'media'            => $media_settings,
+                    'admin_profile'    => $admin_profile,
+                    'standard_pages'   => $standard_pages,
+                    'page_on_front'    => $page_on_front,
+                    'primary_menu'     => $primary_menu,
+                    'privacy_policy'   => $privacy_policy,
                     'share_image'      => $share_image,
                 ),
                 'logs'    => $logs,

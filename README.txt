@@ -1,14 +1,14 @@
 === Velocity Addons ===
 Contributors: velocitydeveloper
 Donate link: https://velocitydeveloper.com
-Tags: comments, spam
+Tags: settings, security, seo, optimization, setup
 Requires at least: 3.0.1
 Tested up to: 6.2
-Stable tag: 2.1.8
+Stable tag: 2.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Menonaktifkan komentar, menyembunyikan notifikasi, batasi login, maintenance mode, blokir akses, dan kontrol lebih pada WordPress.
+Toolkit pengaturan, keamanan, SEO, optimasi, serta 1 Click Setup untuk mempercepat konfigurasi WordPress.
 == Description ==
 
 Plugin "Velocity Addons" adalah sebuah plugin yang menyediakan berbagai fitur tambahan untuk mengatur dan meningkatkan pengalaman admin WordPress Anda. Plugin ini memberikan kontrol yang lebih besar atas beberapa aspek penting dalam pengelolaan situs WordPress Anda. Fitur-fitur yang disediakan oleh plugin ini antara lain:
@@ -21,6 +21,13 @@ This section describes how to install the plugin and get it working.
 3. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Changelog ==
+
+=2.1.9=
+- Tambahkan halaman 1 Click Setup dengan checklist pengaturan permalink, zona waktu, format tanggal, dan Media Settings.
+- Tambahkan setup profil admin saat ini, Basic Page berbahasa Indonesia, homepage statis, Menu Utama pada lokasi `primary`, serta Privacy Policy Page.
+- Tambahkan generator metadata SEO homepage berbasis lisensi; task non-AI tetap dapat dijalankan tanpa License Key.
+- Gunakan Site Logo sebagai sumber utama `share_image` SEO dengan favicon sebagai fallback.
+- Hindari duplikasi halaman dan item menu yang sudah tersedia serta tampilkan hasil setiap task pada log setup.
 
 =2.1.8=
 - Perbaiki duplikasi menu WhatsApp yang muncul 2 kali di admin Velocity Addons.

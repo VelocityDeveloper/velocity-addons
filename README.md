@@ -1,6 +1,6 @@
 # Velocity Addons
 
-Plugin "Velocity Addons" adalah sebuah plugin yang menyediakan berbagai fitur tambahan untuk mengatur dan meningkatkan pengalaman admin WordPress Anda. Plugin ini memberikan kontrol yang lebih besar atas beberapa aspek penting dalam pengelolaan situs WordPress Anda.
+Plugin "Velocity Addons" menyediakan toolkit pengaturan, keamanan, SEO, optimasi, dan 1 Click Setup untuk mempercepat konfigurasi WordPress.
 
 ## Installation
 

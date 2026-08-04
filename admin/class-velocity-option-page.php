@@ -1263,8 +1263,24 @@ class Custom_Admin_Option_Page
                             <span>Set date format ke <code>j F Y</code>, time format ke <code>H:i</code>, minggu dimulai di <strong>Minggu</strong></span>
                         </label>
                         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="velocity-setup-task-media" checked style="margin-top:4px;">
+                            <span>Set Media Settings: thumbnail <strong>150×150</strong> tanpa crop, medium <strong>300×300</strong>, large <strong>800×800</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="velocity-setup-task-admin-profile" checked style="margin-top:4px;">
+                            <span>Set profil admin saat ini: jika <strong>First Name</strong> kosong, isi First Name dan <strong>Display name publicly as</strong> menjadi <strong>Admin</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
                             <input type="checkbox" id="velocity-setup-task-standard-pages" checked style="margin-top:4px;">
-                            <span>Generate Basic Page: <strong>Home</strong>, <strong>Profile</strong>, <strong>Gallery</strong>, <strong>Contact</strong>. Jika sudah ada, skip. Lalu set Reading homepage ke <strong>Home</strong></span>
+                            <span>Generate Basic Page: <strong>Beranda</strong>, <strong>Tentang Kami</strong>, <strong>Layanan</strong>, <strong>Galeri</strong>, <strong>Kontak Kami</strong>. Jika sudah ada, skip. Lalu set Reading homepage ke <strong>Beranda</strong></span>
+                        </label>
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="velocity-setup-task-primary-menu" checked style="margin-top:4px;">
+                            <span>Buat <strong>Menu Utama</strong> dari Basic Page dan pasang ke lokasi menu <code>primary</code></span>
+                        </label>
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="velocity-setup-task-privacy-policy" checked style="margin-top:4px;">
+                            <span>Setup <strong>Privacy Policy Page</strong>: gunakan halaman yang tersedia atau buat <strong>Kebijakan Privasi</strong>, publish, lalu tetapkan di WordPress</span>
                         </label>
                         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
                             <input type="checkbox" id="velocity-setup-task-home-seo" checked style="margin-top:4px;">
@@ -1272,7 +1288,7 @@ class Custom_Admin_Option_Page
                         </label>
                         <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
                             <input type="checkbox" id="velocity-setup-task-share-image" checked style="margin-top:4px;">
-                            <span>Setup <strong>share_image</strong> SEO dari favicon bila ada</span>
+                            <span>Setup <strong>share_image</strong> SEO dari <strong>Site Logo</strong>, gunakan favicon sebagai fallback</span>
                         </label>
                     </div>
                     <button type="button" class="button button-primary" id="velocity-one-click-setup-run">Run 1 Click setup</button>
@@ -1284,7 +1300,11 @@ class Custom_Admin_Option_Page
                             var permalinkCheckbox = document.getElementById('velocity-setup-task-permalink');
                             var timezoneCheckbox = document.getElementById('velocity-setup-task-timezone');
                             var dateTimeCheckbox = document.getElementById('velocity-setup-task-datetime');
+                            var mediaCheckbox = document.getElementById('velocity-setup-task-media');
+                            var adminProfileCheckbox = document.getElementById('velocity-setup-task-admin-profile');
                             var standardPagesCheckbox = document.getElementById('velocity-setup-task-standard-pages');
+                            var primaryMenuCheckbox = document.getElementById('velocity-setup-task-primary-menu');
+                            var privacyPolicyCheckbox = document.getElementById('velocity-setup-task-privacy-policy');
                             var homeSeoCheckbox = document.getElementById('velocity-setup-task-home-seo');
                             var shareImageCheckbox = document.getElementById('velocity-setup-task-share-image');
                             var config = window.velocitySettingsConfig || {};
@@ -1329,12 +1349,16 @@ class Custom_Admin_Option_Page
                                     permalink: !!(permalinkCheckbox && permalinkCheckbox.checked),
                                     timezone: !!(timezoneCheckbox && timezoneCheckbox.checked),
                                     datetime: !!(dateTimeCheckbox && dateTimeCheckbox.checked),
+                                    media: !!(mediaCheckbox && mediaCheckbox.checked),
+                                    admin_profile: !!(adminProfileCheckbox && adminProfileCheckbox.checked),
                                     standard_pages: !!(standardPagesCheckbox && standardPagesCheckbox.checked),
+                                    primary_menu: !!(primaryMenuCheckbox && primaryMenuCheckbox.checked),
+                                    privacy_policy: !!(privacyPolicyCheckbox && privacyPolicyCheckbox.checked),
                                     home_seo: !!(homeSeoCheckbox && homeSeoCheckbox.checked),
                                     share_image: !!(shareImageCheckbox && shareImageCheckbox.checked)
                                 };
 
-                                if (!tasks.permalink && !tasks.timezone && !tasks.datetime && !tasks.standard_pages && !tasks.home_seo && !tasks.share_image) {
+                                if (!tasks.permalink && !tasks.timezone && !tasks.datetime && !tasks.media && !tasks.admin_profile && !tasks.standard_pages && !tasks.primary_menu && !tasks.privacy_policy && !tasks.home_seo && !tasks.share_image) {
                                     appendLog('[inline] error: pilih minimal 1 poin');
                                     return;
                                 }
@@ -1382,8 +1406,12 @@ class Custom_Admin_Option_Page
                                             appendLog('Date Format: ' + (json.data.date_format || ''));
                                             appendLog('Time Format: ' + (json.data.time_format || ''));
                                             appendLog('Start of Week: ' + (json.data.start_of_week || ''));
+                                            appendLog('Media Settings: ' + (json.data.media || ''));
+                                            appendLog('Admin Profile: ' + (json.data.admin_profile || ''));
                                             appendLog('Standard Pages: ' + (json.data.standard_pages || ''));
                                             appendLog('Homepage ID: ' + (json.data.page_on_front || ''));
+                                            appendLog('Primary Menu: ' + (json.data.primary_menu || ''));
+                                            appendLog('Privacy Policy: ' + (json.data.privacy_policy || ''));
                                             appendLog('Home Title: ' + (json.data.home_title || ''));
                                             appendLog('Home Description: ' + (json.data.home_description || ''));
                                             appendLog('Home Keywords: ' + (json.data.home_keywords || ''));

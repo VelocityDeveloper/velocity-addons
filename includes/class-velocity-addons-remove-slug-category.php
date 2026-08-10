@@ -25,6 +25,7 @@
  class Velocity_Addons_Remove_Slug_Category {
     public function __construct() {
         add_filter('post_type_link', array($this, 'remove_category_slug'), 10, 2);
+        add_filter('get_the_archive_title', array($this, 'remove_category_from_archive_title'));
         add_action('init', array($this, 'flush_rewrite_rules'));
     }
 
@@ -41,6 +42,16 @@
         }
 
         return $post_link;
+    }
+
+    public function remove_category_from_archive_title($title) {
+        $remove_category_archive_title = get_option('remove_category_archive_title_velocity', '1');
+
+        if ($remove_category_archive_title && is_category()) {
+            return single_cat_title('', false);
+        }
+
+        return $title;
     }
 
     public function flush_rewrite_rules() {

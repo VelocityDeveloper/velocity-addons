@@ -293,6 +293,7 @@ class Custom_Admin_Option_Page
         register_setting('velocity_general_options_group', 'disable_gutenberg');
         register_setting('velocity_general_options_group', 'classic_widget_velocity');
         register_setting('velocity_general_options_group', 'remove_slug_category_velocity');
+        register_setting('velocity_general_options_group', 'remove_category_archive_title_velocity');
         register_setting('velocity_general_options_group', 'enable_xml_sitemap');
         register_setting('velocity_general_options_group', 'seo_velocity');
         register_setting('velocity_general_options_group', 'statistik_velocity');
@@ -622,6 +623,7 @@ class Custom_Admin_Option_Page
             ['id' => 'enable_xml_sitemap', 'type' => 'checkbox', 'title' => 'XML Sitemap', 'std' => 1, 'label' => 'Aktifkan XML Sitemap Generator (sitemap.xml).'],
             ['id' => 'floating_scrollTop', 'type' => 'checkbox', 'title' => 'Floating Scrolltop', 'std' => 1, 'label' => 'Aktifkan scrollTop ke halaman atas.'],
             ['id' => 'remove_slug_category_velocity', 'type' => 'checkbox', 'title' => 'Remove Slug Category', 'std' => 0, 'label' => 'Aktifkan untuk hapus slug /category/ dari URL.'],
+            ['id' => 'remove_category_archive_title_velocity', 'type' => 'checkbox', 'title' => 'Remove Category from Archive Title', 'std' => 1, 'label' => 'Hapus prefix "Category:" dari judul halaman arsip kategori.'],
         ];
         $this->render_general_settings_section('velocity_general_settings', 'General', 'Pengaturan dasar situs dan perilaku WordPress.', $fields);
     }
@@ -707,6 +709,7 @@ class Custom_Admin_Option_Page
             'floating_whatsapp' => 1,
             'floating_scrollTop' => 1,
             'remove_slug_category_velocity' => 0,
+            'remove_category_archive_title_velocity' => 1,
             'news_generate' => 1,
             'velocity_gallery' => 0,
             'velocity_optimasi' => 0,

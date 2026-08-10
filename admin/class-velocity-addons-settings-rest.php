@@ -463,8 +463,9 @@ class Velocity_Addons_Admin_Settings_REST
         $run_privacy_policy = !empty($tasks['privacy_policy']);
         $run_home_seo = !empty($tasks['home_seo']);
         $run_share_image = !empty($tasks['share_image']);
+        $run_remove_category_archive_title = !empty($tasks['remove_category_archive_title']);
 
-        if (!$run_permalink && !$run_timezone && !$run_datetime && !$run_media && !$run_admin_profile && !$run_standard_pages && !$run_primary_menu && !$run_privacy_policy && !$run_home_seo && !$run_share_image) {
+        if (!$run_permalink && !$run_timezone && !$run_datetime && !$run_media && !$run_admin_profile && !$run_standard_pages && !$run_primary_menu && !$run_privacy_policy && !$run_home_seo && !$run_share_image && !$run_remove_category_archive_title) {
             $run_permalink = true;
             $run_timezone = true;
             $run_datetime = true;
@@ -475,6 +476,7 @@ class Velocity_Addons_Admin_Settings_REST
             $run_privacy_policy = true;
             $run_home_seo = true;
             $run_share_image = true;
+            $run_remove_category_archive_title = true;
         }
 
         $logs[] = 'Task permalink: ' . ($run_permalink ? 'ya' : 'tidak');
@@ -487,6 +489,7 @@ class Velocity_Addons_Admin_Settings_REST
         $logs[] = 'Task privacy policy: ' . ($run_privacy_policy ? 'ya' : 'tidak');
         $logs[] = 'Task home seo: ' . ($run_home_seo ? 'ya' : 'tidak');
         $logs[] = 'Task share image: ' . ($run_share_image ? 'ya' : 'tidak');
+        $logs[] = 'Task remove category from archive title: ' . ($run_remove_category_archive_title ? 'ya' : 'tidak');
 
         $license = get_option('velocity_license', array());
         $license_key = is_array($license) && isset($license['key']) ? sanitize_text_field((string) $license['key']) : '';
@@ -539,6 +542,7 @@ class Velocity_Addons_Admin_Settings_REST
         $primary_menu = '';
         $privacy_policy = '';
         $privacy_policy_id = 0;
+        $remove_category_archive_title = '';
         if ($run_permalink) {
             update_option('permalink_structure', '/%category%/%postname%/');
             $logs[] = 'Option permalink_structure diupdate';
@@ -843,6 +847,14 @@ class Velocity_Addons_Admin_Settings_REST
             $logs[] = 'Skip share image';
         }
 
+        if ($run_remove_category_archive_title) {
+            update_option('remove_category_archive_title_velocity', 1);
+            $remove_category_archive_title = 'aktif';
+            $logs[] = 'Remove Category from Archive Title diaktifkan';
+        } else {
+            $logs[] = 'Skip remove category from archive title';
+        }
+
         $logs[] = 'Selesai';
 
         return rest_ensure_response(
@@ -866,6 +878,7 @@ class Velocity_Addons_Admin_Settings_REST
                     'primary_menu'     => $primary_menu,
                     'privacy_policy'   => $privacy_policy,
                     'share_image'      => $share_image,
+                    'remove_category_archive_title' => $remove_category_archive_title,
                 ),
                 'logs'    => $logs,
             )

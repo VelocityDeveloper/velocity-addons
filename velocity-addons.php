@@ -16,7 +16,7 @@
  * Plugin Name:       Velocity Addons
  * Plugin URI:        https://velocitydeveloper.com
  * Description:       Toolkit pengaturan, keamanan, SEO, optimasi, dan 1 Click Setup untuk WordPress.
- * Version:           2.1.9
+ * Version:           2.2.0
  * Author:            Velocity
  * Author URI:        https://velocitydeveloper.com
  * License:           GPL-2.0+

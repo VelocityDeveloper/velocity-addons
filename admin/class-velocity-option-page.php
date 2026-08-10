@@ -1293,6 +1293,10 @@ class Custom_Admin_Option_Page
                             <input type="checkbox" id="velocity-setup-task-share-image" checked style="margin-top:4px;">
                             <span>Setup <strong>share_image</strong> SEO dari <strong>Site Logo</strong>, gunakan favicon sebagai fallback</span>
                         </label>
+                        <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="velocity-setup-task-remove-category-archive-title" checked style="margin-top:4px;">
+                            <span>Aktifkan <strong>Remove Category from Archive Title</strong></span>
+                        </label>
                     </div>
                     <button type="button" class="button button-primary" id="velocity-one-click-setup-run">Run 1 Click setup</button>
                     <div id="velocity-one-click-setup-log" style="margin-top:16px;background:#111827;color:#e5e7eb;border-radius:8px;padding:14px;min-height:180px;font-family:monospace;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow:auto;">Klik tombol untuk mulai setup...</div>
@@ -1310,6 +1314,7 @@ class Custom_Admin_Option_Page
                             var privacyPolicyCheckbox = document.getElementById('velocity-setup-task-privacy-policy');
                             var homeSeoCheckbox = document.getElementById('velocity-setup-task-home-seo');
                             var shareImageCheckbox = document.getElementById('velocity-setup-task-share-image');
+                            var removeCategoryArchiveTitleCheckbox = document.getElementById('velocity-setup-task-remove-category-archive-title');
                             var config = window.velocitySettingsConfig || {};
 
                             function setLog(lines) {
@@ -1358,10 +1363,11 @@ class Custom_Admin_Option_Page
                                     primary_menu: !!(primaryMenuCheckbox && primaryMenuCheckbox.checked),
                                     privacy_policy: !!(privacyPolicyCheckbox && privacyPolicyCheckbox.checked),
                                     home_seo: !!(homeSeoCheckbox && homeSeoCheckbox.checked),
-                                    share_image: !!(shareImageCheckbox && shareImageCheckbox.checked)
+                                    share_image: !!(shareImageCheckbox && shareImageCheckbox.checked),
+                                    remove_category_archive_title: !!(removeCategoryArchiveTitleCheckbox && removeCategoryArchiveTitleCheckbox.checked)
                                 };
 
-                                if (!tasks.permalink && !tasks.timezone && !tasks.datetime && !tasks.media && !tasks.admin_profile && !tasks.standard_pages && !tasks.primary_menu && !tasks.privacy_policy && !tasks.home_seo && !tasks.share_image) {
+                                if (!tasks.permalink && !tasks.timezone && !tasks.datetime && !tasks.media && !tasks.admin_profile && !tasks.standard_pages && !tasks.primary_menu && !tasks.privacy_policy && !tasks.home_seo && !tasks.share_image && !tasks.remove_category_archive_title) {
                                     appendLog('[inline] error: pilih minimal 1 poin');
                                     return;
                                 }
@@ -1419,6 +1425,7 @@ class Custom_Admin_Option_Page
                                             appendLog('Home Description: ' + (json.data.home_description || ''));
                                             appendLog('Home Keywords: ' + (json.data.home_keywords || ''));
                                             appendLog('Share Image: ' + (json.data.share_image || ''));
+                                            appendLog('Remove Category from Archive Title: ' + (json.data.remove_category_archive_title || ''));
                                         }
                                     })
                                     .catch(function(error) {

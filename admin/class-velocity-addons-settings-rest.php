@@ -372,6 +372,14 @@ class Velocity_Addons_Admin_Settings_REST
     public function auto_activate_license(WP_REST_Request $request)
     {
         $source = parse_url(get_site_url(), PHP_URL_HOST);
+
+        // Debug logging
+        error_log('[Velocity Addons] Auto-activate license request for source: ' . $source);
+
+        // Force IPv4 resolution for the license API. The license server
+        // whitelists the WordPress server by IPv4, but outbound requests may
+        // prefer IPv6 and get rejected with "IP address is not registered".
+        add_filter('http_api_curl', array($this, 'force_ipv4_for_velocity_api'), 10, 3);
         $response = wp_remote_get(
             'https://api.velocitydeveloper.co/api/v1/get-auto-license',
             array(
@@ -381,8 +389,10 @@ class Velocity_Addons_Admin_Settings_REST
                 'timeout' => 20,
             )
         );
+        remove_filter('http_api_curl', array($this, 'force_ipv4_for_velocity_api'), 10);
 
         if (is_wp_error($response)) {
+            error_log('[Velocity Addons] Auto-activate license WP_Error: ' . $response->get_error_message());
             return new WP_Error(
                 'velocity_auto_license_failed',
                 $response->get_error_message(),
@@ -391,10 +401,23 @@ class Velocity_Addons_Admin_Settings_REST
         }
 
         $http_code = (int) wp_remote_retrieve_response_code($response);
-        $decoded = json_decode((string) wp_remote_retrieve_body($response), true);
+        $body = wp_remote_retrieve_body($response);
+        $decoded = json_decode((string) $body, true);
+
+        // Debug logging
+        error_log('[Velocity Addons] Auto-activate license HTTP code: ' . $http_code);
+        error_log('[Velocity Addons] Auto-activate license response body: ' . $body);
 
         if ($http_code < 200 || $http_code >= 300 || !is_array($decoded)) {
             $message = is_array($decoded) && isset($decoded['message']) ? (string) $decoded['message'] : __('Auto license request failed.', 'velocity-addons');
+
+            // Include server IP in error for easier whitelisting
+            $server_ip = $this->get_server_ip();
+            if ($server_ip) {
+                $message .= ' Server IP: ' . $server_ip;
+            }
+
+            error_log('[Velocity Addons] Auto-activate license failed: ' . $message . ' - details: ' . wp_json_encode($decoded));
             return new WP_Error(
                 'velocity_auto_license_invalid',
                 $message,
@@ -1282,6 +1305,34 @@ class Velocity_Addons_Admin_Settings_REST
         $normalized = str_ireplace(array('%0D%0A', '%0A', '%0D'), "\n", $normalized);
 
         return sanitize_textarea_field($normalized);
+    }
+
+    private function get_server_ip()
+    {
+        // Try to get the server's public IP
+        if (isset($_SERVER['SERVER_ADDR'])) {
+            return $_SERVER['SERVER_ADDR'];
+        }
+        // Fallback: try to get from HTTP headers if behind proxy
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ips[0]);
+        }
+        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        }
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+        return null;
+    }
+
+    public function force_ipv4_for_velocity_api($handle, $parsed_args, $url)
+    {
+        if (stripos($url, 'api.velocitydeveloper.co') !== false) {
+            curl_setopt($handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        }
+        return $handle;
     }
 
     private function get_default_for_schema($schema)

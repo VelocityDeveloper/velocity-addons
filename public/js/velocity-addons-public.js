@@ -93,60 +93,6 @@
 				}
 			});
 		}
-
-		var $canvas = $('#optimizeChart');
-		if (!$canvas.length) { console.warn('Optimize DB: canvas #optimizeChart not found'); return; }
-		if (typeof Chart === 'undefined') { console.warn('Optimize DB: Chart.js not loaded'); return; }
-		var raw = $canvas.attr('data-chart');
-		var data = [];
-		try { data = raw ? JSON.parse(raw) : []; } catch(e) { console.warn('Optimize DB: invalid chart data JSON', e); data = []; }
-		if (!data.length) { console.warn('Optimize DB: chart data empty'); return; }
-		var labels = data.map(function(i){ return i.label; });
-		var sizes  = data.map(function(i){ return Math.round((i.size||0)/1024); });
-		var counts = data.map(function(i){ return i.count||0; });
-		var ctx = $canvas[0].getContext('2d');
-		new Chart(ctx, {
-			type: 'line',
-			data: {
-				labels: labels,
-				datasets: [
-					{
-						label: 'Ukuran (KB)',
-						data: sizes,
-						borderColor: '#be1e61',
-						backgroundColor: 'rgba(190, 30, 97, 0.15)',
-						fill: 'origin',
-						borderWidth: 3,
-						tension: 0.35,
-						pointRadius: 3,
-						pointHoverRadius: 6
-					},
-					{
-						label: 'Row',
-						data: counts,
-						borderColor: '#1e73be',
-						backgroundColor: 'rgba(30, 115, 190, 0.15)',
-						fill: false,
-						borderWidth: 3,
-						tension: 0.35,
-						pointRadius: 3,
-						pointHoverRadius: 6
-					}
-				]
-			},
-			options: {
-				responsive: true,
-				maintainAspectRatio: false,
-				plugins: {
-					legend: { display: true, position: 'top' }
-				},
-				scales: {
-					x: { grid: { color: 'rgba(0,0,0,0.05)' } },
-					y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }
-				}
-			}
-		});
-		// console.info('Optimize DB: chart rendered', { labels: labels, sizes: sizes, counts: counts });
 	});
 
 })( jQuery );

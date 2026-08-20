@@ -96,7 +96,10 @@ class Velocity_Addons_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/velocity-addons-public.js', array( 'jquery' ), $this->version, false );
+		$public_script_path = plugin_dir_path( __FILE__ ) . 'js/velocity-addons-public.js';
+		$public_script_ver  = file_exists( $public_script_path ) ? (string) filemtime( $public_script_path ) : $this->version;
+
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/velocity-addons-public.js', array( 'jquery' ), $public_script_ver, false );
 
 	}
 

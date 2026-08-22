@@ -376,21 +376,12 @@ class Velocity_Addons_Admin_Settings_REST
         // Debug logging
         error_log('[Velocity Addons] Auto-activate license request for source: ' . $source);
 
-        // Force IPv4 resolution for the license API. The license server
-        // whitelists the WordPress server by IPv4, but outbound requests may
-        // prefer IPv6 and get rejected with "IP address is not registered".
+        // Force IPv4 resolution for both the direct license API and the relay.
+        // The license server whitelists the WordPress server by IPv4, but
+        // outbound requests may prefer IPv6 and get rejected.
         add_filter('http_api_curl', array($this, 'force_ipv4_for_velocity_api'), 10, 3);
-        $response = wp_remote_get(
-            function_exists('velocity_addons_license_api_url')
-                ? velocity_addons_license_api_url('get-auto-license')
-                : 'https://api.nglorok.com/api/v1/get-auto-license',
-            array(
-                'headers' => array(
-                    'source' => $source,
-                ),
-                'timeout' => 20,
-            )
-        );
+        $attempts = array();
+        $response = $this->request_auto_license($source, $attempts);
         remove_filter('http_api_curl', array($this, 'force_ipv4_for_velocity_api'), 10);
 
         if (is_wp_error($response)) {
@@ -398,7 +389,11 @@ class Velocity_Addons_Admin_Settings_REST
             return new WP_Error(
                 'velocity_auto_license_failed',
                 $response->get_error_message(),
-                array('status' => 400)
+                array(
+                    'status' => 400,
+                    'attempted' => $attempts,
+                    'resolved_via' => null,
+                )
             );
         }
 
@@ -412,18 +407,22 @@ class Velocity_Addons_Admin_Settings_REST
 
         if ($http_code < 200 || $http_code >= 300 || !is_array($decoded)) {
             $message = is_array($decoded) && isset($decoded['message']) ? (string) $decoded['message'] : __('Auto license request failed.', 'velocity-addons');
+            $attempt_labels = $this->format_auto_license_attempt_labels($attempts);
 
-            // Include server IP in error for easier whitelisting
-            $server_ip = $this->get_server_ip();
-            if ($server_ip) {
-                $message .= ' Server IP: ' . $server_ip;
+            if (!empty($attempt_labels)) {
+                $message .= ' Attempts: ' . implode(' -> ', $attempt_labels);
             }
 
             error_log('[Velocity Addons] Auto-activate license failed: ' . $message . ' - details: ' . wp_json_encode($decoded));
             return new WP_Error(
                 'velocity_auto_license_invalid',
                 $message,
-                array('status' => 400, 'details' => $decoded)
+                array(
+                    'status' => 400,
+                    'details' => $decoded,
+                    'attempted' => $attempts,
+                    'resolved_via' => null,
+                )
             );
         }
 
@@ -442,7 +441,12 @@ class Velocity_Addons_Admin_Settings_REST
             return new WP_Error(
                 'velocity_auto_license_missing',
                 __('License key not found from auto activate endpoint.', 'velocity-addons'),
-                array('status' => 400, 'details' => $decoded)
+                array(
+                    'status' => 400,
+                    'details' => $decoded,
+                    'attempted' => $attempts,
+                    'resolved_via' => null,
+                )
             );
         }
 
@@ -456,7 +460,12 @@ class Velocity_Addons_Admin_Settings_REST
             return new WP_Error(
                 'velocity_auto_license_verify_failed',
                 isset($result['message']) ? (string) $result['message'] : __('Auto license verification failed.', 'velocity-addons'),
-                array('status' => 400, 'details' => $result)
+                array(
+                    'status' => 400,
+                    'details' => $result,
+                    'attempted' => $attempts,
+                    'resolved_via' => $this->resolve_auto_license_via($attempts, $http_code, $decoded),
+                )
             );
         }
 
@@ -467,6 +476,8 @@ class Velocity_Addons_Admin_Settings_REST
                 'key'      => $license_key,
                 'result'   => $result,
                 'settings' => $this->get_page_settings($this->get_page_definition('license')),
+                'attempted' => $attempts,
+                'resolved_via' => $this->resolve_auto_license_via($attempts, $http_code, $decoded),
             )
         );
     }
@@ -1331,14 +1342,138 @@ class Velocity_Addons_Admin_Settings_REST
 
     public function force_ipv4_for_velocity_api($handle, $parsed_args, $url)
     {
-        $license_api_host = function_exists('velocity_addons_license_api_host')
-            ? velocity_addons_license_api_host()
-            : 'api.nglorok.com';
+        $license_api_hosts = array_filter(array(
+            function_exists('velocity_addons_license_api_host')
+                ? velocity_addons_license_api_host('direct')
+                : 'api.velocitydeveloper.co',
+            function_exists('velocity_addons_license_api_host')
+                ? velocity_addons_license_api_host('relay')
+                : 'api.nglorok.com',
+        ));
 
-        if ($license_api_host !== '' && stripos($url, $license_api_host) !== false) {
-            curl_setopt($handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+        foreach ($license_api_hosts as $license_api_host) {
+            if ($license_api_host !== '' && stripos($url, $license_api_host) !== false) {
+                curl_setopt($handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+                break;
+            }
         }
+
         return $handle;
+    }
+
+    private function request_auto_license($source, &$attempts = array())
+    {
+        $attempts = array();
+
+        $urls = array(
+            function_exists('velocity_addons_license_api_url')
+                ? velocity_addons_license_api_url('get-auto-license', 'direct')
+                : 'https://api.velocitydeveloper.co/api/v1/get-auto-license',
+            function_exists('velocity_addons_license_api_url')
+                ? velocity_addons_license_api_url('get-auto-license', 'relay')
+                : 'https://api.nglorok.com/api/v1/get-auto-license',
+        );
+
+        $urls = array_values(array_unique(array_filter($urls)));
+        $last_response = null;
+
+        foreach ($urls as $index => $url) {
+            $label = strpos($url, 'nglorok.com') !== false ? 'relay' : 'direct';
+            error_log('[Velocity Addons] Auto-activate attempt ' . ($index + 1) . ' (' . $label . '): ' . $url . ' | source=' . $source);
+
+            $response = wp_remote_get(
+                $url,
+                array(
+                    'headers' => array(
+                        'source' => $source,
+                    ),
+                    'timeout' => 20,
+                )
+            );
+
+            if (is_wp_error($response)) {
+                error_log('[Velocity Addons] Auto-activate attempt ' . ($index + 1) . ' (' . $label . ') WP_Error: ' . $response->get_error_message());
+                $last_response = $response;
+                continue;
+            }
+
+            $http_code = (int) wp_remote_retrieve_response_code($response);
+            $body = wp_remote_retrieve_body($response);
+            $decoded = json_decode((string) $body, true);
+            $response_headers = wp_remote_retrieve_headers($response);
+            $normalized_headers = array();
+
+            if ($response_headers instanceof \WpOrg\Requests\Utility\CaseInsensitiveDictionary) {
+                $normalized_headers = $response_headers->getAll();
+            } elseif (is_array($response_headers)) {
+                $normalized_headers = $response_headers;
+            }
+
+            $attempts[] = array(
+                'via' => $label,
+                'url' => $url,
+                'http_code' => $http_code,
+                'success' => $http_code >= 200 && $http_code < 300 && is_array($decoded),
+                'headers' => $normalized_headers,
+            );
+
+            error_log('[Velocity Addons] Auto-activate attempt ' . ($index + 1) . ' (' . $label . ') HTTP ' . $http_code . ' headers: ' . wp_json_encode($normalized_headers));
+            error_log('[Velocity Addons] Auto-activate attempt ' . ($index + 1) . ' (' . $label . ') HTTP ' . $http_code . ' body: ' . $body);
+
+            if ($http_code >= 200 && $http_code < 300 && is_array($decoded)) {
+                error_log('[Velocity Addons] Auto-activate success via ' . $label . ' (HTTP ' . $http_code . ')');
+                return $response;
+            }
+
+            $last_response = $response;
+        }
+
+        error_log('[Velocity Addons] Auto-activate fallback exhausted. Returning last response.');
+
+        return $last_response;
+    }
+
+    private function resolve_auto_license_via($attempts, $http_code, $decoded)
+    {
+        if ($http_code < 200 || $http_code >= 300 || !is_array($decoded)) {
+            return null;
+        }
+
+        if (!is_array($attempts)) {
+            return null;
+        }
+
+        foreach (array_reverse($attempts) as $attempt) {
+            if (!empty($attempt['success']) && !empty($attempt['via'])) {
+                return (string) $attempt['via'];
+            }
+        }
+
+        return null;
+    }
+
+    private function format_auto_license_attempt_labels($attempts)
+    {
+        if (!is_array($attempts)) {
+            return array();
+        }
+
+        $labels = array();
+
+        foreach ($attempts as $attempt) {
+            if (empty($attempt['via'])) {
+                continue;
+            }
+
+            $label = (string) $attempt['via'];
+            if (isset($attempt['http_code'])) {
+                $label .= ' (' . (int) $attempt['http_code'] . ')';
+            }
+
+            $labels[] = $label;
+        }
+
+        return $labels;
     }
 
     private function get_default_for_schema($schema)

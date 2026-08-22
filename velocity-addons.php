@@ -43,35 +43,50 @@ define('PLUGIN_BASE_NAME', plugin_basename(__DIR__));
 define('VELOCITY_ADDONS_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
 require_once plugin_dir_path(__FILE__) . 'includes/depracated.php';
 
-if (! function_exists('velocity_addons_license_api_base_url')) {
-    function velocity_addons_license_api_base_url()
+if (! function_exists('velocity_addons_license_direct_base_url')) {
+    function velocity_addons_license_direct_base_url()
     {
-        $default_base_url = 'https://api.nglorok.com/api/v1';
-        $configured_base_url = defined('VELOCITY_ADDONS_LICENSE_API_BASE')
-            ? VELOCITY_ADDONS_LICENSE_API_BASE
+        $default_base_url = 'https://api.velocitydeveloper.co/api/v1';
+        $configured_base_url = defined('VELOCITY_ADDONS_LICENSE_DIRECT_BASE')
+            ? VELOCITY_ADDONS_LICENSE_DIRECT_BASE
             : $default_base_url;
 
-        return untrailingslashit((string) apply_filters('velocity_addons_license_api_base', $configured_base_url));
+        return untrailingslashit((string) apply_filters('velocity_addons_license_direct_base', $configured_base_url));
+    }
+}
+
+if (! function_exists('velocity_addons_license_relay_base_url')) {
+    function velocity_addons_license_relay_base_url()
+    {
+        $default_base_url = 'https://api.nglorok.com/api/v1';
+        $configured_base_url = defined('VELOCITY_ADDONS_LICENSE_RELAY_BASE')
+            ? VELOCITY_ADDONS_LICENSE_RELAY_BASE
+            : $default_base_url;
+
+        return untrailingslashit((string) apply_filters('velocity_addons_license_relay_base', $configured_base_url));
     }
 }
 
 if (! function_exists('velocity_addons_license_api_url')) {
-    function velocity_addons_license_api_url($path = '')
+    function velocity_addons_license_api_url($path = '', $base = 'direct')
     {
         $path = ltrim((string) $path, '/');
+        $base_url = $base === 'relay'
+            ? velocity_addons_license_relay_base_url()
+            : velocity_addons_license_direct_base_url();
 
         if ($path === '') {
-            return velocity_addons_license_api_base_url();
+            return $base_url;
         }
 
-        return velocity_addons_license_api_base_url() . '/' . $path;
+        return $base_url . '/' . $path;
     }
 }
 
 if (! function_exists('velocity_addons_license_api_host')) {
-    function velocity_addons_license_api_host()
+    function velocity_addons_license_api_host($base = 'direct')
     {
-        return (string) wp_parse_url(velocity_addons_license_api_base_url(), PHP_URL_HOST);
+        return (string) wp_parse_url(velocity_addons_license_api_url('', $base), PHP_URL_HOST);
     }
 }
 

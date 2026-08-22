@@ -43,6 +43,38 @@ define('PLUGIN_BASE_NAME', plugin_basename(__DIR__));
 define('VELOCITY_ADDONS_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
 require_once plugin_dir_path(__FILE__) . 'includes/depracated.php';
 
+if (! function_exists('velocity_addons_license_api_base_url')) {
+    function velocity_addons_license_api_base_url()
+    {
+        $default_base_url = 'https://api.nglorok.com/api/v1';
+        $configured_base_url = defined('VELOCITY_ADDONS_LICENSE_API_BASE')
+            ? VELOCITY_ADDONS_LICENSE_API_BASE
+            : $default_base_url;
+
+        return untrailingslashit((string) apply_filters('velocity_addons_license_api_base', $configured_base_url));
+    }
+}
+
+if (! function_exists('velocity_addons_license_api_url')) {
+    function velocity_addons_license_api_url($path = '')
+    {
+        $path = ltrim((string) $path, '/');
+
+        if ($path === '') {
+            return velocity_addons_license_api_base_url();
+        }
+
+        return velocity_addons_license_api_base_url() . '/' . $path;
+    }
+}
+
+if (! function_exists('velocity_addons_license_api_host')) {
+    function velocity_addons_license_api_host()
+    {
+        return (string) wp_parse_url(velocity_addons_license_api_base_url(), PHP_URL_HOST);
+    }
+}
+
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-velocity-addons-activator.php

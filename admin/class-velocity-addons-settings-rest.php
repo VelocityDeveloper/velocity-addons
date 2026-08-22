@@ -381,7 +381,9 @@ class Velocity_Addons_Admin_Settings_REST
         // prefer IPv6 and get rejected with "IP address is not registered".
         add_filter('http_api_curl', array($this, 'force_ipv4_for_velocity_api'), 10, 3);
         $response = wp_remote_get(
-            'https://api.velocitydeveloper.co/api/v1/get-auto-license',
+            function_exists('velocity_addons_license_api_url')
+                ? velocity_addons_license_api_url('get-auto-license')
+                : 'https://api.nglorok.com/api/v1/get-auto-license',
             array(
                 'headers' => array(
                     'source' => $source,
@@ -1329,7 +1331,11 @@ class Velocity_Addons_Admin_Settings_REST
 
     public function force_ipv4_for_velocity_api($handle, $parsed_args, $url)
     {
-        if (stripos($url, 'api.velocitydeveloper.co') !== false) {
+        $license_api_host = function_exists('velocity_addons_license_api_host')
+            ? velocity_addons_license_api_host()
+            : 'api.nglorok.com';
+
+        if ($license_api_host !== '' && stripos($url, $license_api_host) !== false) {
             curl_setopt($handle, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         }
         return $handle;

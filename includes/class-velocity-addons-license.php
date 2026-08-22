@@ -6,7 +6,9 @@ class Velocity_Addons_License
 
     public function __construct()
     {
-        $this->api_url = 'https://api.velocitydeveloper.co/api/v1/license';
+        $this->api_url = function_exists('velocity_addons_license_api_url')
+            ? velocity_addons_license_api_url('license')
+            : 'https://api.nglorok.com/api/v1/license';
         $this->option_name = 'velocity_license';
 
         // Schedule a weekly check for license status

@@ -1387,6 +1387,7 @@ class Velocity_Addons_Admin_Settings_REST
                     'headers' => array(
                         'source' => $source,
                     ),
+                    'user-agent' => 'VelocityLicenseClient/1.0',
                     'timeout' => 20,
                 )
             );

@@ -237,6 +237,11 @@ class Velocity_Addons
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-license.php';
 
         /**
+         * Class untuk autentikasi remote control dari CRM
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-addons-remote-auth.php';
+
+        /**
          * Class untuk menambah option page untuk Floating Whatsapp
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'includes/class-velocity-floating-whatsapp.php';
@@ -280,6 +285,11 @@ class Velocity_Addons
          * REST endpoints for optimize database actions in admin.
          */
         require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-velocity-addons-optimize-rest.php';
+
+        /**
+         * REST endpoints for remote control from CRM (new-vdnet).
+         */
+        require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-velocity-addons-remote-control-rest.php';
 
         /**
          * The class responsible for defining all actions that occur in the public-facing

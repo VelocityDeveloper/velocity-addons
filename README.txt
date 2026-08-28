@@ -4,11 +4,11 @@ Donate link: https://velocitydeveloper.com
 Tags: settings, security, seo, optimization, setup
 Requires at least: 3.0.1
 Tested up to: 6.2
-Stable tag: 2.2.2
+Stable tag: 2.2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Toolkit pengaturan, keamanan, SEO, optimasi, serta 1 Click Setup untuk mempercepat konfigurasi WordPress.
+Toolkit pengaturan, keamanan, SEO, optimasi, maintenance, serta 1 Click Setup untuk mempercepat konfigurasi WordPress.
 == Description ==
 
 Plugin "Velocity Addons" adalah sebuah plugin yang menyediakan berbagai fitur tambahan untuk mengatur dan meningkatkan pengalaman admin WordPress Anda. Plugin ini memberikan kontrol yang lebih besar atas beberapa aspek penting dalam pengelolaan situs WordPress Anda. Fitur-fitur yang disediakan oleh plugin ini antara lain:
@@ -21,6 +21,11 @@ This section describes how to install the plugin and get it working.
 3. Place `<?php do_action('plugin_name_hook'); ?>` in your templates
 
 == Changelog ==
+
+=2.2.3=
+- Tambahkan pilihan logo kustom pada halaman maintenance.
+- Tambahkan opsi untuk menampilkan atau menyembunyikan logo maintenance.
+- Tampilkan logo kustom di tengah dengan ukuran asli tanpa margin atau padding horizontal.
 
 =2.2.2=
 - Perbaiki User-Agent pada request get-auto-license agar tidak terkena HTTP 429.

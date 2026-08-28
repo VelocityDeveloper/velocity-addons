@@ -15,8 +15,8 @@
  * @wordpress-plugin
  * Plugin Name:       Velocity Addons
  * Plugin URI:        https://velocitydeveloper.com
- * Description:       Toolkit pengaturan, keamanan, SEO, optimasi, dan 1 Click Setup untuk WordPress.
- * Version:           2.2.2
+ * Description:       Toolkit pengaturan, keamanan, SEO, optimasi, maintenance, dan 1 Click Setup untuk WordPress.
+ * Version:           2.2.3
  * Author:            Velocity
  * Author URI:        https://velocitydeveloper.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if (!defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('VELOCITY_ADDONS_VERSION', '2.2.2');
+define('VELOCITY_ADDONS_VERSION', '2.2.3');
 define('VELOCITY_ADDONS_DB_VERSION', VELOCITY_ADDONS_VERSION);
 define('PLUGIN_DIR', plugin_dir_path(__DIR__));
 define('PLUGIN_FILE', plugin_basename(__FILE__));

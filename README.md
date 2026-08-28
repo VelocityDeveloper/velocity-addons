@@ -1,6 +1,6 @@
 # Velocity Addons
 
-Plugin "Velocity Addons" menyediakan toolkit pengaturan, keamanan, SEO, optimasi, dan 1 Click Setup untuk mempercepat konfigurasi WordPress.
+Plugin "Velocity Addons" menyediakan toolkit pengaturan, keamanan, SEO, optimasi, maintenance, dan 1 Click Setup untuk mempercepat konfigurasi WordPress.
 
 ## Installation
 
@@ -71,7 +71,7 @@ Jika atribut `form` tidak diisi, captcha akan otomatis mencari elemen `<form>` t
   Blokir akses ke halaman `wp-login.php` dan hanya izinkan IP tertentu atau negara tertentu (misal Indonesia). Pengaturan di menu **Security**.
 
 - **Maintenance Mode**  
-  Aktifkan mode maintenance dengan tampilan halaman khusus saat situs dalam perbaikan. Pengaturan di menu **Velocity Addons → Maintenance Mode**.
+  Aktifkan halaman maintenance, pilih logo kustom, atau sembunyikan logo saat situs dalam perbaikan. Pengaturan di menu **Velocity Addons → Maintenance Mode**.
 
 - **Auto Resize Image**  
   Otomatis mengecilkan ukuran gambar yang diupload agar lebih hemat storage dan mempercepat loading. Pengaturan di menu **Velocity Addons → Auto Resize**.

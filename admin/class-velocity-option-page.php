@@ -470,6 +470,21 @@ class Custom_Admin_Option_Page
                     ],
                     [
                         'id'    => 'maintenance_mode_data',
+                        'sub'   => 'show_logo',
+                        'type'  => 'checkbox',
+                        'title' => 'Tampilkan Logo',
+                        'std'   => 1,
+                        'label' => 'Tampilkan logo pada halaman maintenance.',
+                    ],
+                    [
+                        'id'    => 'maintenance_mode_data',
+                        'sub'   => 'logo',
+                        'type'  => 'media',
+                        'title' => 'Logo Maintenance',
+                        'label' => 'Pilih logo khusus. Jika kosong, logo bawaan akan digunakan.',
+                    ],
+                    [
+                        'id'    => 'maintenance_mode_data',
                         'sub'   => 'header',
                         'type'  => 'text',
                         'title' => 'Header',
@@ -833,6 +848,34 @@ class Custom_Admin_Option_Page
                         echo '<input type="checkbox" id="maintenance_mode" name="maintenance_mode" value="1" ' . $mm_checked . '>';
                         echo '<span class="vd-switch-slider" aria-hidden="true"></span>';
                         echo '</label>';
+                        echo '</div>';
+                        echo '</div>';
+
+                        // Maintenance logo visibility
+                        $mm_data = get_option('maintenance_mode_data', []);
+                        $show_logo = !is_array($mm_data) || !array_key_exists('show_logo', $mm_data) || !empty($mm_data['show_logo']);
+                        echo '<div class="vd-form-group">';
+                        echo '<div class="vd-form-left">';
+                        echo '<label class="vd-form-label" for="maintenance_mode__show_logo">Tampilkan Logo</label>';
+                        echo '<small class="vd-form-hint">Nonaktifkan untuk menyembunyikan logo dari halaman maintenance.</small>';
+                        echo '</div>';
+                        echo '<div class="vd-form-right">';
+                        echo '<input type="hidden" name="maintenance_mode_data[show_logo]" value="0">';
+                        echo '<label class="vd-switch">';
+                        echo '<input type="checkbox" id="maintenance_mode__show_logo" name="maintenance_mode_data[show_logo]" value="1" ' . checked($show_logo, true, false) . '>';
+                        echo '<span class="vd-switch-slider" aria-hidden="true"></span>';
+                        echo '</label>';
+                        echo '</div>';
+                        echo '</div>';
+
+                        // Maintenance logo media
+                        echo '<div class="vd-form-group">';
+                        echo '<div class="vd-form-left">';
+                        echo '<label class="vd-form-label" for="maintenance_mode__logo">Logo Maintenance</label>';
+                        echo '<small class="vd-form-hint">Pilih logo khusus. Jika kosong, logo bawaan akan digunakan.</small>';
+                        echo '</div>';
+                        echo '<div class="vd-form-right">';
+                        $this->field(['id' => 'maintenance_mode_data', 'sub' => 'logo', 'type' => 'media', 'title' => 'Logo Maintenance']);
                         echo '</div>';
                         echo '</div>';
 

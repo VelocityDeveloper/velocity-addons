@@ -52,6 +52,9 @@ class Velocity_Addons_Maintenance_Mode
         $bd      = !empty($opt['body']) ? $opt['body'] : 'We are currently performing maintenance. Please check back later.';
         $bg_id   = !empty($opt['background']) ? absint($opt['background']) : 0;
         $bg_url  = $bg_id ? wp_get_attachment_image_url($bg_id, 'full') : '';
+        $show_logo = !array_key_exists('show_logo', $opt) || !empty($opt['show_logo']);
+        $logo_id   = !empty($opt['logo']) ? absint($opt['logo']) : 0;
+        $logo_url  = $logo_id ? wp_get_attachment_image_url($logo_id, 'full') : '';
 
         $heading        = esc_html($hd);
         $body_content   = wpautop(wp_kses_post($bd));
@@ -129,8 +132,30 @@ class Velocity_Addons_Maintenance_Mode
 
                 .maintenance-media .logo {
                     width: 78%;
+                    height: auto;
                     overflow: visible;
-                    filter: drop-shadow(0 22px 28px rgba(0, 0, 0, 0.32));
+                }
+
+                .maintenance-media.has-custom-logo {
+                    width: 100%;
+                    height: auto;
+                    aspect-ratio: auto;
+                    margin: 0 0 24px;
+                    padding-left: 0;
+                    padding-right: 0;
+                    display: flex;
+                    justify-content: center;
+                }
+
+                .maintenance-media .custom-logo {
+                    width: auto;
+                    height: auto;
+                    max-width: none;
+                    max-height: none;
+                    margin-left: 0;
+                    margin-right: 0;
+                    padding-left: 0;
+                    padding-right: 0;
                 }
 
                 .maintenance-media .ring-outer,
@@ -372,7 +397,11 @@ class Velocity_Addons_Maintenance_Mode
         <body>
             <div class="maintenance-shell">
                 <div class="maintenance-card">
-                    <div class="maintenance-media" aria-hidden="true">
+                    <?php if ($show_logo) : ?>
+                    <div class="maintenance-media<?php echo $logo_url ? ' has-custom-logo' : ''; ?>"<?php echo $logo_url ? '' : ' aria-hidden="true"'; ?>>
+                        <?php if ($logo_url) : ?>
+                        <img class="logo custom-logo" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>">
+                        <?php else : ?>
                         <svg class="logo" viewBox="0 0 93.300247 107.21929" xmlns="http://www.w3.org/2000/svg">
                             <defs>
                                 <linearGradient id="vd-blue" x1="82" y1="75" x2="113" y2="146" gradientUnits="userSpaceOnUse">
@@ -400,7 +429,9 @@ class Velocity_Addons_Maintenance_Mode
                                 <path class="bolt-main" fill="url(#vd-lime)" d="m98.64982 56.209572 34.39583-8.466667-58.20833 92.604165Z" />
                             </g>
                         </svg>
+                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                     <h1><?php echo $heading; ?></h1>
                     <div class="content">
                         <?php echo $body_content; ?>

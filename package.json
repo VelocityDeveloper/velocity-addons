@@ -1,7 +1,7 @@
 {
   "name": "velocity-addons",
-  "version": "2.2.2",
-  "description": "Toolkit pengaturan, keamanan, SEO, optimasi, dan 1 Click Setup untuk WordPress",
+  "version": "2.2.3",
+  "description": "Toolkit pengaturan, keamanan, SEO, optimasi, maintenance, dan 1 Click Setup untuk WordPress",
   "main": "index.js",
   "scripts": {
     "build": "npm run zip",

@@ -1576,6 +1576,8 @@ class Velocity_Addons_Admin_Settings_REST
                             'header'     => array('type' => 'text', 'default' => 'Maintenance Mode'),
                             'body'       => array('type' => 'textarea', 'default' => 'We are currently performing maintenance. Please check back later.'),
                             'background' => array('type' => 'int', 'default' => 0),
+                            'show_logo'  => array('type' => 'bool', 'default' => 1),
+                            'logo'       => array('type' => 'int', 'default' => 0),
                         ),
                     ),
                 ),
